@@ -13,23 +13,50 @@ import javafx.geometry.*;
 public class CalculatorGUI extends Application {
 
 	Label output;
+	String operation = "";
+	
+	StringBuilder numberString; // Concatenate the entered numbers.
+	StringBuilder outputText;	// Entire equation displayed on label.
 
 	public static void main(String[] args) {
 		launch(args);
 	}
 
+	
+	private int getNumber() {
+		// Exception occurs if operation button is pressed when no numbers have been entered.
+		try {
+			return Integer.parseInt(numberString.toString());
+		}
+		catch(NumberFormatException e) { 
+			return 0;
+		}
+	}
+	
+	private void updateOutputText(String s) {
+		if(s.contentEquals("c")) // Clear output text.
+			outputText.setLength(0);
+		else
+			outputText.append(s);
+	}
+	
 	public void start(Stage stage) {
 		stage.setTitle("Calculator");
 		stage.setWidth(400);
 		stage.setHeight(500);
 
 		FlowPane root = new FlowPane(Orientation.VERTICAL);
+		
+		numberString = new StringBuilder("");
+		outputText = new StringBuilder("");
 
 
 		GridPane mainPad = new GridPane();
 		
 		mainPad.setHgap(50);
 		mainPad.setVgap(78);
+		
+		output = new Label("");
 
 
 		// Consider setting the button height/width and remove scaling.
@@ -55,7 +82,6 @@ public class CalculatorGUI extends Application {
 		Button bM = new Button("*"); // Multiplication
 
 		// Scale the buttons.
-		
 		b0.getTransforms().add(upScale);
 		b1.getTransforms().add(upScale);
 		b2.getTransforms().add(upScale);
@@ -73,117 +99,148 @@ public class CalculatorGUI extends Application {
 		bD.getTransforms().add(upScale);
 		bM.getTransforms().add(upScale);
 		 
-		output = new Label("Test");
-
 		mainPad.add(b1, 0, 0);
 		mainPad.add(b2, 1, 0);
 		mainPad.add(b3, 2, 0);
 		mainPad.add(bA, 3, 0);
-		
 		mainPad.add(b4, 0, 1);
 		mainPad.add(b5, 1, 1);
 		mainPad.add(b6, 2, 1);
 		mainPad.add(bS, 3, 1);
-		
 		mainPad.add(b7, 0, 2);
 		mainPad.add(b8, 1, 2);
 		mainPad.add(b9, 2, 2);
 		mainPad.add(bD, 3, 2);
-		
 		mainPad.add(bC, 0, 3);
 		mainPad.add(b0, 1, 3);
 		mainPad.add(bE, 2, 3);
 		mainPad.add(bM, 3, 3);
 		
 		Scene scene = new Scene(root, 500, 500);
-
 		root.getChildren().addAll(output, mainPad);
 
 
 		// Event Handling
 		b0.setOnAction((actionEvent) -> {
-			output.setText("0 Placeholder");
+			numberString.append("0");
+			updateOutputText("0");
+			output.setText(outputText.toString());
 
 		});
 
 		b1.setOnAction((actionEvent) -> {
-			output.setText("1 Placeholder");
+			numberString.append("1");
+			updateOutputText("1");
+			output.setText(outputText.toString());
 
 		});
 
 		b2.setOnAction((actionEvent) -> {
-			output.setText("2 Placeholder");
+			numberString.append("2");
+			updateOutputText("2");
+			output.setText(outputText.toString());
 
 		});
 
 		b3.setOnAction((actionEvent) -> {
-			output.setText("3 Placeholder");
+			numberString.append("3");
+			updateOutputText("3");
+			output.setText(outputText.toString());
 
 		});
 
 		b4.setOnAction((actionEvent) -> {
-			output.setText("4 Placeholder");
+			numberString.append("4");
+			updateOutputText("4");
+			output.setText(outputText.toString());
 
 		});
 
 		b5.setOnAction((actionEvent) -> {
-			output.setText("5 Placeholder");
+			numberString.append("5");
+			updateOutputText("5");
+			output.setText(outputText.toString());
 
 		});
 
 		b6.setOnAction((actionEvent) -> {
-			output.setText("6 Placeholder");
-
+			numberString.append("6");
+			updateOutputText("6");
+			output.setText(outputText.toString());
 		});
 
 		b7.setOnAction((actionEvent) -> {
-			output.setText("7 Placeholder");
+			numberString.append("7");
+			updateOutputText("7");
+			output.setText(outputText.toString());
 
 		});
 
 		b8.setOnAction((actionEvent) -> {
-			output.setText("8 Placeholder");
+			numberString.append("8");
+			updateOutputText("8");
+			output.setText(outputText.toString());
 
 		});
 
 		b9.setOnAction((actionEvent) -> {
-			output.setText("9 Placeholder");
+			numberString.append("9");
+			updateOutputText("9");
+			output.setText(outputText.toString());
 
 		});
 
 		bC.setOnAction((actionEvent) -> {
-			output.setText("Clear Function");
+			updateOutputText("c"); // PASS A SPECIFIC VALUE - CHECK IT INSIDE UPDATEOUTPUTTEXT. IF TRUE, RESET STRINGBUILDER (ALSO RESET THE NUMBERSTRING).
+			output.setText(outputText.toString());
 
 		});
 
 		bE.setOnAction((actionEvent) -> {
-			output.setText("Equals Function");
+			updateOutputText("=");
+			output.setText(outputText.toString());
 
 		});
 		
 		bA.setOnAction((actionEvent) -> {
-			output.setText("Addition Function");
+			
+			getNumber();
+			updateOutputText(" + ");
+			output.setText(outputText.toString());
+			operation = "addition";
 
 		});
 		
 		bS.setOnAction((actionEvent) -> {
-			output.setText("Subtraction Function");
+			getNumber();
+			updateOutputText(" - ");
+			output.setText(outputText.toString());
+			operation = "subtraction";
 
 		});
 
 		bD.setOnAction((actionEvent) -> {
-			output.setText("Division Function");
+			getNumber();
+			updateOutputText(" / ");
+			output.setText(outputText.toString());
+			operation = "division";
 
 		});
 
 		bM.setOnAction((actionEvent) -> {
-			output.setText("Multiplication Function");
+			getNumber();
+			updateOutputText(" * ");
+			output.setText(outputText.toString());
+			operation = "multiplication";
 
 		});
+
 
 
 
 		stage.setScene(scene);
 		stage.show();
 	}
+	
+
 }
