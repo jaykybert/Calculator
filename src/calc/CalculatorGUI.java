@@ -1,13 +1,12 @@
 package calc;
 
-import javafx.application.*;	// Run
+import java.io.File;
+
+import javafx.application.*;
 import javafx.scene.*;
 import javafx.stage.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.control.*; // Components
-import javafx.scene.transform.*;
-import javafx.event.*;
+import javafx.scene.control.*;
 import javafx.geometry.*;
 
 public class CalculatorGUI extends Application {
@@ -17,6 +16,8 @@ public class CalculatorGUI extends Application {
 	
 	StringBuilder numberString; // Concatenate the entered numbers.
 	StringBuilder outputText;	// Entire equation displayed on label.
+	
+	File cssFile = new File("style.css");
 
 	public static void main(String[] args) {
 		launch(args);
@@ -50,18 +51,12 @@ public class CalculatorGUI extends Application {
 		numberString = new StringBuilder("");
 		outputText = new StringBuilder("");
 
-
 		GridPane mainPad = new GridPane();
 		
-		mainPad.setHgap(50);
-		mainPad.setVgap(78);
+		mainPad.setHgap(5);
+		mainPad.setVgap(5);
 		
 		output = new Label("");
-
-
-		// Consider setting the button height/width and remove scaling.
-		// Size can be done using external CSS.
-		Scale upScale = new Scale(3, 4);
 
 		// Buttons
 		Button b0 = new Button("0");
@@ -81,24 +76,7 @@ public class CalculatorGUI extends Application {
 		Button bD = new Button("/"); // Division
 		Button bM = new Button("*"); // Multiplication
 
-		// Scale the buttons.
-		b0.getTransforms().add(upScale);
-		b1.getTransforms().add(upScale);
-		b2.getTransforms().add(upScale);
-		b3.getTransforms().add(upScale);
-		b4.getTransforms().add(upScale);
-		b5.getTransforms().add(upScale);
-		b6.getTransforms().add(upScale);
-		b7.getTransforms().add(upScale);
-		b8.getTransforms().add(upScale);
-		b9.getTransforms().add(upScale);
-		bC.getTransforms().add(upScale);
-		bE.getTransforms().add(upScale);
-		bA.getTransforms().add(upScale);
-		bS.getTransforms().add(upScale);
-		bD.getTransforms().add(upScale);
-		bM.getTransforms().add(upScale);
-		 
+
 		mainPad.add(b1, 0, 0);
 		mainPad.add(b2, 1, 0);
 		mainPad.add(b3, 2, 0);
@@ -118,6 +96,10 @@ public class CalculatorGUI extends Application {
 		
 		Scene scene = new Scene(root, 500, 500);
 		root.getChildren().addAll(output, mainPad);
+		
+		//CSS
+		scene.getStylesheets().clear();
+		scene.getStylesheets().add("file:///" + cssFile.getAbsolutePath().replace("\\", "/"));
 
 
 		// Event Handling
