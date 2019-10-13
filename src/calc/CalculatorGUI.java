@@ -12,10 +12,15 @@ import javafx.geometry.*;
 public class CalculatorGUI extends Application {
 
 	Label output;
-	String operation = "";
-	
+
 	StringBuilder numberString; // Concatenate the entered numbers.
 	StringBuilder outputText;	// Entire equation displayed on label.
+	
+	String operation; // One of: + - / *
+	
+	boolean equalsPressed = false;
+	
+	int num1, num2, sum; // Consider converting to double, allow the user to enter decimal points.
 	
 	File cssFile = new File("style.css");
 
@@ -34,17 +39,13 @@ public class CalculatorGUI extends Application {
 		}
 	}
 	
-	private void updateOutputText(String s) {
-		if(s.contentEquals("c")) // Clear output text.
-			outputText.setLength(0);
-		else
-			outputText.append(s);
-	}
 	
 	public void start(Stage stage) {
 		stage.setTitle("Calculator");
-		stage.setWidth(400);
-		stage.setHeight(500);
+		stage.setMinHeight(400);
+		stage.setMaxHeight(400);
+		stage.setMinWidth(300);
+		stage.setMaxWidth(300);
 
 		FlowPane root = new FlowPane(Orientation.VERTICAL);
 		
@@ -53,10 +54,13 @@ public class CalculatorGUI extends Application {
 
 		GridPane mainPad = new GridPane();
 		
-		mainPad.setHgap(5);
-		mainPad.setVgap(5);
+		mainPad.setHgap(2);
+		mainPad.setVgap(2);
+		mainPad.setPadding(new Insets(10, 10, 10, 10));
+		mainPad.setAlignment(Pos.CENTER);
 		
 		output = new Label("");
+		output.setAlignment(Pos.CENTER);
 
 		// Buttons
 		Button b0 = new Button("0");
@@ -76,7 +80,6 @@ public class CalculatorGUI extends Application {
 		Button bD = new Button("/"); // Division
 		Button bM = new Button("*"); // Multiplication
 
-
 		mainPad.add(b1, 0, 0);
 		mainPad.add(b2, 1, 0);
 		mainPad.add(b3, 2, 0);
@@ -94,135 +97,165 @@ public class CalculatorGUI extends Application {
 		mainPad.add(bE, 2, 3);
 		mainPad.add(bM, 3, 3);
 		
-		Scene scene = new Scene(root, 500, 500);
-		root.getChildren().addAll(output, mainPad);
+		Scene scene = new Scene(root, 300, 400);
 		
-		//CSS
+		root.getChildren().addAll(output, mainPad);
+
 		scene.getStylesheets().clear();
 		scene.getStylesheets().add("file:///" + cssFile.getAbsolutePath().replace("\\", "/"));
+		stage.setScene(scene);
+		stage.show();
 
 
 		// Event Handling
 		b0.setOnAction((actionEvent) -> {
 			numberString.append("0");
-			updateOutputText("0");
+			outputText.append("0");
 			output.setText(outputText.toString());
 
 		});
 
 		b1.setOnAction((actionEvent) -> {
 			numberString.append("1");
-			updateOutputText("1");
+			outputText.append("1");
 			output.setText(outputText.toString());
 
 		});
 
 		b2.setOnAction((actionEvent) -> {
 			numberString.append("2");
-			updateOutputText("2");
+			outputText.append("2");
 			output.setText(outputText.toString());
 
 		});
 
 		b3.setOnAction((actionEvent) -> {
 			numberString.append("3");
-			updateOutputText("3");
+			outputText.append("3");
 			output.setText(outputText.toString());
 
 		});
 
 		b4.setOnAction((actionEvent) -> {
 			numberString.append("4");
-			updateOutputText("4");
+			outputText.append("4");
 			output.setText(outputText.toString());
 
 		});
 
 		b5.setOnAction((actionEvent) -> {
 			numberString.append("5");
-			updateOutputText("5");
+			outputText.append("5");
 			output.setText(outputText.toString());
 
 		});
 
 		b6.setOnAction((actionEvent) -> {
 			numberString.append("6");
-			updateOutputText("6");
+			outputText.append("6");
 			output.setText(outputText.toString());
 		});
 
 		b7.setOnAction((actionEvent) -> {
 			numberString.append("7");
-			updateOutputText("7");
+			outputText.append("7");
 			output.setText(outputText.toString());
 
 		});
 
 		b8.setOnAction((actionEvent) -> {
 			numberString.append("8");
-			updateOutputText("8");
+			outputText.append("8");
 			output.setText(outputText.toString());
 
 		});
 
 		b9.setOnAction((actionEvent) -> {
 			numberString.append("9");
-			updateOutputText("9");
+			outputText.append("9");
 			output.setText(outputText.toString());
 
 		});
 
 		bC.setOnAction((actionEvent) -> {
-			updateOutputText("c"); // PASS A SPECIFIC VALUE - CHECK IT INSIDE UPDATEOUTPUTTEXT. IF TRUE, RESET STRINGBUILDER (ALSO RESET THE NUMBERSTRING).
+			// Reset output, number concatenation, and number variables.
+			outputText.setLength(0); 
+			numberString.setLength(0);
+			num1 = num2 = 0;
 			output.setText(outputText.toString());
-
 		});
 
 		bE.setOnAction((actionEvent) -> {
-			updateOutputText("=");
+			equalsPressed = true;
+			num2 = getNumber();
+			
+			switch(operation) {
+			case "+":
+				sum = num1 + num2;
+				break;
+			case "-":
+				sum = num1 - num2;
+				break;
+			case "/":
+				sum = num1 / num2;
+				break;
+			case "*":
+				sum = num1 * num2;
+			}			
+			outputText.append(" = " + sum + " ");
 			output.setText(outputText.toString());
-
+			
+			num1 = sum; // The first number is now the sum.
+			num2 = 0;
 		});
 		
 		bA.setOnAction((actionEvent) -> {
+			operation = "+";
+			if(equalsPressed) // First number is now the result of the last equation.
+				num2 = getNumber();
+			else
+				num1 = getNumber();
 			
-			getNumber();
-			updateOutputText(" + ");
-			output.setText(outputText.toString());
-			operation = "addition";
-
+			outputText.append("+");
+			// Reset the numberString after getting the first number.
+			numberString.setLength(0);	
+			output.setText(outputText.toString());		
 		});
 		
 		bS.setOnAction((actionEvent) -> {
-			getNumber();
-			updateOutputText(" - ");
-			output.setText(outputText.toString());
-			operation = "subtraction";
-
+			operation = "-";
+			if(equalsPressed)
+				num2 = getNumber();
+			else
+				num1 = getNumber();
+			
+			outputText.append("-");
+			numberString.setLength(0);
+			output.setText(outputText.toString());	
 		});
 
 		bD.setOnAction((actionEvent) -> {
-			getNumber();
-			updateOutputText(" / ");
+			operation = "/";
+			if(equalsPressed)
+				num2 = getNumber();
+			else
+				num1 = getNumber();
+			
+			outputText.append("/");
+			numberString.setLength(0);
 			output.setText(outputText.toString());
-			operation = "division";
-
 		});
 
 		bM.setOnAction((actionEvent) -> {
-			getNumber();
-			updateOutputText(" * ");
+			operation = "*";
+			if(equalsPressed)
+				num2 = getNumber();
+			else
+				num1 = getNumber();
+			
+			outputText.append("*");
+			numberString.setLength(0);
 			output.setText(outputText.toString());
-			operation = "multiplication";
-
 		});
-
-
-
-
-		stage.setScene(scene);
-		stage.show();
 	}
-	
-
 }
