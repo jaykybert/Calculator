@@ -1,5 +1,18 @@
 .button {
 	-fx-pref-width: 60px;
-	-fx-pref-height: 60px;
+	-fx-pref-height: 70px;
 	-fx-font-size: 20px;
+	-fx-font-family: monospace;
+	-fx-background-color: #696969;
+	-fx-text-fill: #FFFFFF
+}
+
+.label {
+	-fx-pref-width: 300px;
+	-fx-pref-height: 50px;
+	-fx-background-color: #696969;
+	-fx-font-size: 20px;
+	-fx-font-family: monospace;
+	-fx-text-fill: #FFFFFF;
+
 }
