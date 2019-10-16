@@ -7,6 +7,9 @@ import javafx.scene.*;
 import javafx.stage.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
+
+import javafx.scene.input.*;
+
 import javafx.geometry.*;
 
 public class CalculatorGUI extends Application {
@@ -16,11 +19,16 @@ public class CalculatorGUI extends Application {
 	StringBuilder numberString; // Concatenate the entered numbers.
 	StringBuilder outputText;	// Entire equation displayed on label.
 	
-	String operation; // One of: + - / *
+	String operation = ""; // One of: + - / *
 	
 	boolean equalsPressed = false;
 	
-	int num1, num2, sum; // Consider converting to double, allow the user to enter decimal points.
+	Double num1 = null, num2 = null, sum = 0.0;
+	
+	// Combination Keys (shift).
+	KeyCombination keyPlus = new KeyCodeCombination(KeyCode.EQUALS, KeyCodeCombination.SHIFT_DOWN);
+	KeyCombination keyMult = new KeyCodeCombination(KeyCode.DIGIT8, KeyCodeCombination.SHIFT_DOWN);
+
 	
 	File cssFile = new File("style.css");
 
@@ -29,13 +37,13 @@ public class CalculatorGUI extends Application {
 	}
 
 	
-	private int getNumber() {
+	private double getNumber() {
 		// Exception occurs if operation button is pressed when no numbers have been entered.
 		try {
-			return Integer.parseInt(numberString.toString());
+			return Double.parseDouble(numberString.toString());
 		}
 		catch(NumberFormatException e) { 
-			return 0;
+			return 0.0;
 		}
 	}
 	
@@ -79,23 +87,28 @@ public class CalculatorGUI extends Application {
 		Button bS = new Button("-"); // Subtraction
 		Button bD = new Button("/"); // Division
 		Button bM = new Button("*"); // Multiplication
+		Button bP = new Button("."); // Decimal Point
 
-		mainPad.add(b1, 0, 0);
-		mainPad.add(b2, 1, 0);
-		mainPad.add(b3, 2, 0);
-		mainPad.add(bA, 3, 0);
-		mainPad.add(b4, 0, 1);
-		mainPad.add(b5, 1, 1);
-		mainPad.add(b6, 2, 1);
-		mainPad.add(bS, 3, 1);
-		mainPad.add(b7, 0, 2);
-		mainPad.add(b8, 1, 2);
-		mainPad.add(b9, 2, 2);
-		mainPad.add(bD, 3, 2);
-		mainPad.add(bC, 0, 3);
-		mainPad.add(b0, 1, 3);
-		mainPad.add(bE, 2, 3);
-		mainPad.add(bM, 3, 3);
+		mainPad.add(bP, 0, 0);
+		mainPad.add(b1, 1, 0);
+		mainPad.add(b2, 2, 0);
+		mainPad.add(b3, 3, 0);
+		mainPad.add(bA, 4, 0);
+		
+		mainPad.add(b4, 1, 1);
+		mainPad.add(b5, 2, 1);
+		mainPad.add(b6, 3, 1);
+		mainPad.add(bS, 4, 1);
+		
+		mainPad.add(b7, 1, 2);
+		mainPad.add(b8, 2, 2);
+		mainPad.add(b9, 3, 2);
+		mainPad.add(bD, 4, 2);
+		
+		mainPad.add(bC, 1, 3);
+		mainPad.add(b0, 2, 3);
+		mainPad.add(bE, 3, 3);
+		mainPad.add(bM, 4, 3);
 		
 		Scene scene = new Scene(root, 300, 400);
 		
@@ -179,16 +192,16 @@ public class CalculatorGUI extends Application {
 
 		bC.setOnAction((actionEvent) -> {
 			// Reset output, number concatenation, and number variables.
-			outputText.setLength(0); 
 			numberString.setLength(0);
-			num1 = num2 = 0;
+			num1 = num2 = 0.0;
+			outputText.setLength(0); 
 			output.setText(outputText.toString());
 		});
 
 		bE.setOnAction((actionEvent) -> {
 			equalsPressed = true;
 			num2 = getNumber();
-			
+
 			switch(operation) {
 			case "+":
 				sum = num1 + num2;
@@ -202,11 +215,11 @@ public class CalculatorGUI extends Application {
 			case "*":
 				sum = num1 * num2;
 			}			
-			outputText.append(" = " + sum + " ");
+			outputText.replace(0, outputText.length(), " = " + sum);
 			output.setText(outputText.toString());
 			
 			num1 = sum; // The first number is now the sum.
-			num2 = 0;
+			num2 = 0.0;
 		});
 		
 		bA.setOnAction((actionEvent) -> {
@@ -257,5 +270,42 @@ public class CalculatorGUI extends Application {
 			numberString.setLength(0);
 			output.setText(outputText.toString());
 		});
+		
+		bP.setOnAction((actionEvent) -> {
+			outputText.append(".");
+			numberString.append(".");
+			output.setText(outputText.toString());
+		});
+		
+		// Keyboard Support
+		scene.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
+			if(key.getCode() == KeyCode.DIGIT0) b0.fire();
+			else if(key.getCode() == KeyCode.NUMPAD0) b0.fire();
+			else if(key.getCode() == KeyCode.DIGIT1) b1.fire();
+			else if(key.getCode() == KeyCode.NUMPAD1) b1.fire();
+			else if(key.getCode() == KeyCode.DIGIT2) b2.fire();
+			else if(key.getCode() == KeyCode.NUMPAD2) b2.fire();
+			else if(key.getCode() == KeyCode.DIGIT3) b3.fire();
+			else if(key.getCode() == KeyCode.NUMPAD3) b3.fire();
+			else if(key.getCode() == KeyCode.DIGIT4) b4.fire();
+			else if(key.getCode() == KeyCode.NUMPAD4) b4.fire();
+			else if(key.getCode() == KeyCode.DIGIT5) b5.fire();
+			else if(key.getCode() == KeyCode.NUMPAD5) b5.fire();	
+			else if(key.getCode() == KeyCode.DIGIT6) b6.fire();
+			else if(key.getCode() == KeyCode.NUMPAD6) b6.fire();		
+			else if(key.getCode() == KeyCode.DIGIT7) b7.fire();
+			else if(key.getCode() == KeyCode.NUMPAD7) b7.fire();
+			else if(key.getCode() == KeyCode.DIGIT8) b8.fire();
+			else if(key.getCode() == KeyCode.NUMPAD8) b8.fire();
+			else if(key.getCode() == KeyCode.DIGIT9) b9.fire();
+			else if(key.getCode() == KeyCode.NUMPAD9) b9.fire();
+			else if(keyPlus.match(key)) bA.fire();
+			else if(key.getCode() == KeyCode.MINUS) bS.fire();
+			else if(key.getCode() == KeyCode.SLASH) bD.fire();
+			else if(keyMult.match(key)) bM.fire();
+			else if(key.getCode() == KeyCode.EQUALS) bE.fire();
+			else if(key.getCode() == KeyCode.DECIMAL) bP.fire();	
+		});
+
 	}
 }
