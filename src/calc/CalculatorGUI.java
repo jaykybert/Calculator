@@ -1,24 +1,18 @@
 package calc;
 
 import java.io.File;
-
 import javafx.application.*;
 import javafx.scene.*;
 import javafx.stage.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
-
 import javafx.scene.input.*;
-
 import javafx.geometry.*;
 
 public class CalculatorGUI extends Application {
-
 	Label output;
-
 	StringBuilder numberString; // Concatenate the entered numbers.
 	StringBuilder outputText;	// Entire equation displayed on label.
-	
 	String operation = ""; // One of: + - / *
 	
 	boolean equalsPressed = false;
@@ -29,7 +23,6 @@ public class CalculatorGUI extends Application {
 	KeyCombination keyPlus = new KeyCodeCombination(KeyCode.EQUALS, KeyCodeCombination.SHIFT_DOWN);
 	KeyCombination keyMult = new KeyCodeCombination(KeyCode.DIGIT8, KeyCodeCombination.SHIFT_DOWN);
 
-	
 	File cssFile = new File("style.css");
 
 	public static void main(String[] args) {
@@ -295,6 +288,7 @@ public class CalculatorGUI extends Application {
 			else if(key.getCode() == KeyCode.NUMPAD6) b6.fire();		
 			else if(key.getCode() == KeyCode.DIGIT7) b7.fire();
 			else if(key.getCode() == KeyCode.NUMPAD7) b7.fire();
+			else if(keyMult.match(key)) bM.fire(); // Must come before b8, otherwise b8 fires.
 			else if(key.getCode() == KeyCode.DIGIT8) b8.fire();
 			else if(key.getCode() == KeyCode.NUMPAD8) b8.fire();
 			else if(key.getCode() == KeyCode.DIGIT9) b9.fire();
@@ -302,10 +296,8 @@ public class CalculatorGUI extends Application {
 			else if(keyPlus.match(key)) bA.fire();
 			else if(key.getCode() == KeyCode.MINUS) bS.fire();
 			else if(key.getCode() == KeyCode.SLASH) bD.fire();
-			else if(keyMult.match(key)) bM.fire();
 			else if(key.getCode() == KeyCode.EQUALS) bE.fire();
-			else if(key.getCode() == KeyCode.DECIMAL) bP.fire();	
+			else if(key.getCode() == KeyCode.DECIMAL) bP.fire();
 		});
-
 	}
 }
