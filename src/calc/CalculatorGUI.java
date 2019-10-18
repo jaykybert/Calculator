@@ -17,6 +17,7 @@ public class CalculatorGUI extends Application {
 	String operation = ""; // One of: + - / *
 
 	boolean equalsPressed = false;
+	boolean plusSign = true; // Used for changing between + and -.
 
 	Double num1 = null, num2 = null, sum = 0.0;
 
@@ -37,7 +38,7 @@ public class CalculatorGUI extends Application {
 			return Double.parseDouble(numberString.toString());
 		}
 		catch(NumberFormatException e) { 
-			return 0.0;
+			return 0.1;
 		}
 	}
 
@@ -82,12 +83,14 @@ public class CalculatorGUI extends Application {
 		Button bD = new Button("/"); // Division
 		Button bM = new Button("*"); // Multiplication
 		Button bP = new Button("."); // Decimal Point
+		Button bSign = new Button("+-"); // Positive or Negative
 
 		mainPad.add(bP, 0, 0);
 		mainPad.add(b1, 1, 0);
 		mainPad.add(b2, 2, 0);
 		mainPad.add(b3, 3, 0);
 		mainPad.add(bA, 4, 0);
+		mainPad.add(bSign, 0, 1);
 		mainPad.add(b4, 1, 1);
 		mainPad.add(b5, 2, 1);
 		mainPad.add(b6, 3, 1);
@@ -206,7 +209,7 @@ public class CalculatorGUI extends Application {
 			sum = Double.parseDouble(new DecimalFormat("#.###").format(sum));
 			outputText.replace(0, outputText.length(), " = " + sum);
 			output.setText(outputText.toString());
-
+			
 			num1 = sum; // The first number is now the sum.
 			num2 = 0.0;
 		});
@@ -263,6 +266,20 @@ public class CalculatorGUI extends Application {
 		bP.setOnAction((actionEvent) -> {
 			outputText.append(".");
 			numberString.append(".");
+			output.setText(outputText.toString());
+		});
+		
+		bSign.setOnAction((actionEvent) -> {
+			if(plusSign) {
+				numberString.insert(0, "-");
+				outputText.insert(outputText.length()-numberString.length() +1, "-");
+				plusSign = false;
+			}
+			else {
+				numberString.insert(0, "+");
+				outputText.insert(outputText.length()-numberString.length() +1, "+");
+				plusSign = true;
+			}		
 			output.setText(outputText.toString());
 		});
 
