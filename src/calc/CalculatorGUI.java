@@ -1,7 +1,9 @@
 package calc;
 
 import java.io.File;
-import java.text.DecimalFormat;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javafx.application.*;
 import javafx.scene.*;
 import javafx.stage.*;
@@ -11,15 +13,17 @@ import javafx.scene.input.*;
 import javafx.geometry.*;
 
 public class CalculatorGUI extends Application {
-	Label output;
-	StringBuilder numberString; // Concatenate the entered numbers.
-	StringBuilder outputText;	// Entire equation displayed on label.
+
+	Label output = new Label("");
+	StringBuilder numberString = new StringBuilder(""); // Concatenate the entered numbers.
 	String operation = ""; // One of: + - / *
+	String lastAction = "";
+	
+	// Parsing the equation.
+	ScriptEngineManager mgr = new ScriptEngineManager();
+	ScriptEngine engine = mgr.getEngineByName("JavaScript");
 
-	boolean equalsPressed = false;
-	boolean plusSign = true; // Used for changing between + and -.
-
-	Double num1 = null, num2 = null, sum = 0.0;
+	Double sum = 0.0;
 
 	// Keyboard input for keys that require shift-press.
 	KeyCombination keyPlus = new KeyCodeCombination(KeyCode.EQUALS, KeyCodeCombination.SHIFT_DOWN);
@@ -32,13 +36,15 @@ public class CalculatorGUI extends Application {
 	}
 
 
-	private double getNumber() {
-		// Exception occurs if operation button is pressed when no numbers have been entered.
+	private double evaluateNumber(String s) {
+		// This doesn't work for integer division that results in a double, i.e. 9 / 4.
 		try {
-			return Double.parseDouble(numberString.toString());
+			if (s.contains(".")) return (Double) engine.eval(s);
+			
+			else return (Integer) engine.eval(s);
 		}
-		catch(NumberFormatException e) { 
-			return 0.1;
+		catch(ScriptException e) {
+			return 0.0;
 		}
 	}
 
@@ -51,18 +57,12 @@ public class CalculatorGUI extends Application {
 		stage.setMaxWidth(300);
 
 		FlowPane root = new FlowPane(Orientation.VERTICAL);
-
-		numberString = new StringBuilder("");
-		outputText = new StringBuilder("");
-
 		GridPane mainPad = new GridPane();
-
 		mainPad.setHgap(2);
 		mainPad.setVgap(2);
 		mainPad.setPadding(new Insets(10, 10, 10, 10));
 		mainPad.setAlignment(Pos.CENTER);
 
-		output = new Label("");
 		output.setAlignment(Pos.CENTER);
 
 		// Buttons
@@ -83,14 +83,12 @@ public class CalculatorGUI extends Application {
 		Button bD = new Button("/"); // Division
 		Button bM = new Button("*"); // Multiplication
 		Button bP = new Button("."); // Decimal Point
-		Button bSign = new Button("+-"); // Positive or Negative
 
 		mainPad.add(bP, 0, 0);
 		mainPad.add(b1, 1, 0);
 		mainPad.add(b2, 2, 0);
 		mainPad.add(b3, 3, 0);
 		mainPad.add(bA, 4, 0);
-		mainPad.add(bSign, 0, 1);
 		mainPad.add(b4, 1, 1);
 		mainPad.add(b5, 2, 1);
 		mainPad.add(b6, 3, 1);
@@ -114,178 +112,161 @@ public class CalculatorGUI extends Application {
 		// Event Handling
 		b0.setOnAction((actionEvent) -> {
 			numberString.append("0");
-			outputText.append("0");
-			output.setText(outputText.toString());
+
+			output.setText(numberString.toString());
+			lastAction = "number";
 
 		});
 
 		b1.setOnAction((actionEvent) -> {
 			numberString.append("1");
-			outputText.append("1");
-			output.setText(outputText.toString());
+
+			output.setText(numberString.toString());
+			lastAction = "number";
 
 		});
 
 		b2.setOnAction((actionEvent) -> {
 			numberString.append("2");
-			outputText.append("2");
-			output.setText(outputText.toString());
+
+			output.setText(numberString.toString());
+			lastAction = "number";
 
 		});
 
 		b3.setOnAction((actionEvent) -> {
 			numberString.append("3");
-			outputText.append("3");
-			output.setText(outputText.toString());
+
+			output.setText(numberString.toString());
+			lastAction = "number";
 
 		});
 
 		b4.setOnAction((actionEvent) -> {
 			numberString.append("4");
-			outputText.append("4");
-			output.setText(outputText.toString());
+
+			output.setText(numberString.toString());
+			lastAction = "number";
 
 		});
 
 		b5.setOnAction((actionEvent) -> {
 			numberString.append("5");
-			outputText.append("5");
-			output.setText(outputText.toString());
 
+			output.setText(numberString.toString());
+			lastAction = "number";
 		});
 
 		b6.setOnAction((actionEvent) -> {
 			numberString.append("6");
-			outputText.append("6");
-			output.setText(outputText.toString());
+
+			output.setText(numberString.toString());
+			lastAction = "number";
 		});
 
 		b7.setOnAction((actionEvent) -> {
 			numberString.append("7");
-			outputText.append("7");
-			output.setText(outputText.toString());
+
+			output.setText(numberString.toString());
+			lastAction = "number";
 
 		});
 
 		b8.setOnAction((actionEvent) -> {
 			numberString.append("8");
-			outputText.append("8");
-			output.setText(outputText.toString());
+
+			output.setText(numberString.toString());
+			lastAction = "number";
 
 		});
 
 		b9.setOnAction((actionEvent) -> {
 			numberString.append("9");
-			outputText.append("9");
-			output.setText(outputText.toString());
+
+			output.setText(numberString.toString());
+			lastAction = "number";
 
 		});
 
 		bC.setOnAction((actionEvent) -> {
 			// Reset output, number concatenation, and number variables.
 			numberString.setLength(0);
-			num1 = num2 = 0.0;
-			outputText.setLength(0); 
-			output.setText(outputText.toString());
+			sum = 0.0;
+			output.setText(numberString.toString());
+			lastAction = "";
+
 		});
 
 		bE.setOnAction((actionEvent) -> {
-			equalsPressed = true;
-			num2 = getNumber();
-
-			switch(operation) {
-			case "+":
-				sum = num1 + num2;
-				break;
-			case "-":
-				sum = num1 - num2;
-				break;
-			case "/":
-				sum = num1 / num2;
-				break;
-			case "*":
-				sum = num1 * num2;
+			if(lastAction.contentEquals("number")) {
+				sum = evaluateNumber(numberString.toString());
+				numberString.replace(0, numberString.length(), sum.toString());
+				lastAction = "equals";
 			}
-			sum = Double.parseDouble(new DecimalFormat("#.###").format(sum));
-			outputText.replace(0, outputText.length(), " = " + sum);
-			output.setText(outputText.toString());
-			
-			num1 = sum; // The first number is now the sum.
-			num2 = 0.0;
+			output.setText(numberString.toString());
 		});
 
 		bA.setOnAction((actionEvent) -> {
-			operation = "+";
-			if(equalsPressed) // First number is now the result of the last equation.
-				num2 = getNumber();
-			else
-				num1 = getNumber();
-
-			outputText.append("+");
-			// Reset the numberString after getting the first number.
-			numberString.setLength(0);	
-			output.setText(outputText.toString());		
+			if(lastAction.contentEquals("number")|lastAction.contentEquals("equals")) {
+				numberString.append("+");
+				lastAction = "operation";
+			}
+			else if(lastAction.contentEquals("operation")) {
+				numberString.replace(numberString.length() - 1, numberString.length(), "+");
+				lastAction = "operation";
+			}
+			output.setText(numberString.toString());
 		});
 
 		bS.setOnAction((actionEvent) -> {
-			operation = "-";
-			if(equalsPressed)
-				num2 = getNumber();
-			else
-				num1 = getNumber();
-
-			outputText.append("-");
-			numberString.setLength(0);
-			output.setText(outputText.toString());	
+			if(lastAction.contentEquals("number")|lastAction.contentEquals("equals")) {
+				numberString.append("-");
+				lastAction = "operation";
+			}
+			else if(lastAction.contentEquals("operation")) {
+				numberString.replace(numberString.length() - 1, numberString.length(), "-");
+				lastAction = "operation";
+			}
+			output.setText(numberString.toString());
 		});
 
 		bD.setOnAction((actionEvent) -> {
-			operation = "/";
-			if(equalsPressed)
-				num2 = getNumber();
-			else
-				num1 = getNumber();
-
-			outputText.append("/");
-			numberString.setLength(0);
-			output.setText(outputText.toString());
+			if(lastAction.contentEquals("number")|lastAction.contentEquals("equals")) {
+				numberString.append("/");
+				lastAction = "operation";
+			}
+			else if(lastAction.contentEquals("operation")) {
+				numberString.replace(numberString.length() - 1, numberString.length(), "/");
+				lastAction = "operation";
+			}
+			
+			output.setText(numberString.toString());
 		});
 
 		bM.setOnAction((actionEvent) -> {
-			operation = "*";
-			if(equalsPressed)
-				num2 = getNumber();
-			else
-				num1 = getNumber();
-
-			outputText.append("*");
-			numberString.setLength(0);
-			output.setText(outputText.toString());
-		});
-
-		bP.setOnAction((actionEvent) -> {
-			outputText.append(".");
-			numberString.append(".");
-			output.setText(outputText.toString());
+			if(lastAction.contentEquals("number")|lastAction.contentEquals("equals")) {
+				numberString.append("*");
+				lastAction = "operation";
+			}
+			else if(lastAction.contentEquals("operation")) {
+				numberString.replace(numberString.length() - 1, numberString.length(), "*");
+				lastAction = "operation";
+			}
+			
+			output.setText(numberString.toString());
 		});
 		
-		bSign.setOnAction((actionEvent) -> {
-			if(plusSign) {
-				numberString.insert(0, "-");
-				outputText.insert(outputText.length()-numberString.length() +1, "-");
-				plusSign = false;
-			}
-			else {
-				numberString.insert(0, "+");
-				outputText.insert(outputText.length()-numberString.length() +1, "+");
-				plusSign = true;
-			}		
-			output.setText(outputText.toString());
+		bP.setOnAction((actionEvent) -> {
+		if(lastAction.contentEquals("number")) {
+			numberString.append(".");
+		}
+		output.setText(numberString.toString());
+		lastAction = "decimal";
+		
 		});
 
 		// Keyboard Support
 		scene.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
-
 			if(key.getCode() == KeyCode.DIGIT0 | key.getCode() == KeyCode.NUMPAD0) b0.fire();
 			else if(key.getCode() == KeyCode.DIGIT1 | key.getCode() == KeyCode.NUMPAD1) b1.fire();
 			else if(key.getCode() == KeyCode.DIGIT2 | key.getCode() == KeyCode.NUMPAD2) b2.fire();
@@ -301,12 +282,10 @@ public class CalculatorGUI extends Application {
 			else if(key.getCode() == KeyCode.MINUS) bS.fire();
 			else if(key.getCode() == KeyCode.SLASH) bD.fire();
 			else if(key.getCode() == KeyCode.EQUALS) bE.fire();
-			else if(key.getCode() == KeyCode.DECIMAL) bP.fire();
+			else if(key.getCode() == KeyCode.PERIOD) bP.fire();
 			else if(key.getCode() == KeyCode.DELETE | key.getCode() == KeyCode.BACK_SPACE) {
 				numberString.setLength(0);
-				num1 = num2 = 0.0;
-				outputText.setLength(0); 
-				output.setText(outputText.toString());
+				output.setText(numberString.toString());
 			}
 		});
 	}
