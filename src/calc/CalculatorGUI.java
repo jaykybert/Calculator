@@ -16,7 +16,6 @@ public class CalculatorGUI extends Application {
 
 	Label output = new Label("");
 	StringBuilder numberString = new StringBuilder(""); // Concatenate the entered numbers.
-	String operation = ""; // One of: + - / *
 	String lastAction = "";
 	
 	// Parsing the equation.
@@ -35,12 +34,11 @@ public class CalculatorGUI extends Application {
 		launch(args);
 	}
 
-
-	private double evaluateNumber(String s) {
-		// This doesn't work for integer division that results in a double, i.e. 9 / 4.
+	
+	private double evaluateNumber(String s) {	
 		try {
-			if (s.contains(".")) return (Double) engine.eval(s);
-			
+			// Cast to Double if any of the numbers or the sum contain a decimal. Otherwise return Integer.	
+			if ((s.contains(".")) || engine.eval(s).toString().contains(".")) return (Double) engine.eval(s);
 			else return (Integer) engine.eval(s);
 		}
 		catch(ScriptException e) {
@@ -189,7 +187,7 @@ public class CalculatorGUI extends Application {
 		});
 
 		bC.setOnAction((actionEvent) -> {
-			// Reset output, number concatenation, and number variables.
+			// Reset everything.
 			numberString.setLength(0);
 			sum = 0.0;
 			output.setText(numberString.toString());
