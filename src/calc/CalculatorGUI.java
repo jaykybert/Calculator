@@ -75,6 +75,7 @@ public class CalculatorGUI extends Application {
 		Button b8 = new Button("8");
 		Button b9 = new Button("9");
 		Button bC = new Button("C"); // Clear 
+		Button bR = new Button("R"); // Remove (last entry)
 		Button bE = new Button("="); // Equals
 		Button bA = new Button("+"); // Addition
 		Button bS = new Button("-"); // Subtraction
@@ -87,6 +88,7 @@ public class CalculatorGUI extends Application {
 		mainPad.add(b2, 2, 0);
 		mainPad.add(b3, 3, 0);
 		mainPad.add(bA, 4, 0);
+		mainPad.add(bR, 0, 1);
 		mainPad.add(b4, 1, 1);
 		mainPad.add(b5, 2, 1);
 		mainPad.add(b6, 3, 1);
@@ -194,6 +196,16 @@ public class CalculatorGUI extends Application {
 			lastAction = "";
 
 		});
+		
+		bR.setOnAction((actionEvent) -> {
+			// Remove the last entry
+			if(numberString.length() > 0)
+				numberString.deleteCharAt(numberString.length() - 1);
+				
+			output.setText(numberString.toString());
+			lastAction = "number";
+		});
+		
 
 		bE.setOnAction((actionEvent) -> {
 			if(lastAction.contentEquals("number")) {
@@ -281,10 +293,8 @@ public class CalculatorGUI extends Application {
 			else if(key.getCode() == KeyCode.SLASH) bD.fire();
 			else if(key.getCode() == KeyCode.EQUALS) bE.fire();
 			else if(key.getCode() == KeyCode.PERIOD) bP.fire();
-			else if(key.getCode() == KeyCode.DELETE | key.getCode() == KeyCode.BACK_SPACE) {
-				numberString.setLength(0);
-				output.setText(numberString.toString());
-			}
+			else if(key.getCode() == KeyCode.DELETE | key.getCode() == KeyCode.C) bC.fire();
+			else if(key.getCode() == KeyCode.BACK_SPACE | key.getCode() == KeyCode.R) bR.fire();
 		});
 	}
 }
