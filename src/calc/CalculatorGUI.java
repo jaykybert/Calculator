@@ -19,8 +19,8 @@ public class CalculatorGUI extends Application {
 	String lastAction = "";
 	
 	// Parsing the equation.
-	ScriptEngineManager mgr = new ScriptEngineManager();
-	ScriptEngine engine = mgr.getEngineByName("JavaScript");
+	ScriptEngineManager sem = new ScriptEngineManager();
+	ScriptEngine se = sem.getEngineByName("JavaScript");
 
 	Double sum = 0.0;
 
@@ -38,8 +38,8 @@ public class CalculatorGUI extends Application {
 	private double evaluateNumber(String s) {	
 		try {
 			// Cast to Double if any of the numbers or the sum contain a decimal. Otherwise return Integer.	
-			if ((s.contains(".")) || engine.eval(s).toString().contains(".")) return (Double) engine.eval(s);
-			else return (Integer) engine.eval(s);
+			if ((s.contains(".")) || se.eval(s).toString().contains(".")) return (Double) se.eval(s);
+			else return (Integer) se.eval(s);
 		}
 		catch(ScriptException e) {
 			return 0.0;
@@ -83,21 +83,24 @@ public class CalculatorGUI extends Application {
 		Button bM = new Button("*"); // Multiplication
 		Button bP = new Button("."); // Decimal Point
 
-		mainPad.add(bP, 0, 0);
 		mainPad.add(b1, 1, 0);
 		mainPad.add(b2, 2, 0);
 		mainPad.add(b3, 3, 0);
 		mainPad.add(bA, 4, 0);
-		mainPad.add(bR, 0, 1);
+		
+		mainPad.add(bC, 0, 1);
 		mainPad.add(b4, 1, 1);
 		mainPad.add(b5, 2, 1);
 		mainPad.add(b6, 3, 1);
 		mainPad.add(bS, 4, 1);
+		
+		mainPad.add(bR, 0, 2);
 		mainPad.add(b7, 1, 2);
 		mainPad.add(b8, 2, 2);
 		mainPad.add(b9, 3, 2);
 		mainPad.add(bD, 4, 2);
-		mainPad.add(bC, 1, 3);
+		
+		mainPad.add(bP, 1, 3);
 		mainPad.add(b0, 2, 3);
 		mainPad.add(bE, 3, 3);
 		mainPad.add(bM, 4, 3);
@@ -112,7 +115,6 @@ public class CalculatorGUI extends Application {
 		// Event Handling
 		b0.setOnAction((actionEvent) -> {
 			numberString.append("0");
-
 			output.setText(numberString.toString());
 			lastAction = "number";
 
@@ -120,7 +122,6 @@ public class CalculatorGUI extends Application {
 
 		b1.setOnAction((actionEvent) -> {
 			numberString.append("1");
-
 			output.setText(numberString.toString());
 			lastAction = "number";
 
@@ -128,7 +129,6 @@ public class CalculatorGUI extends Application {
 
 		b2.setOnAction((actionEvent) -> {
 			numberString.append("2");
-
 			output.setText(numberString.toString());
 			lastAction = "number";
 
@@ -136,7 +136,6 @@ public class CalculatorGUI extends Application {
 
 		b3.setOnAction((actionEvent) -> {
 			numberString.append("3");
-
 			output.setText(numberString.toString());
 			lastAction = "number";
 
@@ -144,7 +143,6 @@ public class CalculatorGUI extends Application {
 
 		b4.setOnAction((actionEvent) -> {
 			numberString.append("4");
-
 			output.setText(numberString.toString());
 			lastAction = "number";
 
@@ -152,21 +150,18 @@ public class CalculatorGUI extends Application {
 
 		b5.setOnAction((actionEvent) -> {
 			numberString.append("5");
-
 			output.setText(numberString.toString());
 			lastAction = "number";
 		});
 
 		b6.setOnAction((actionEvent) -> {
 			numberString.append("6");
-
 			output.setText(numberString.toString());
 			lastAction = "number";
 		});
 
 		b7.setOnAction((actionEvent) -> {
 			numberString.append("7");
-
 			output.setText(numberString.toString());
 			lastAction = "number";
 
@@ -174,7 +169,6 @@ public class CalculatorGUI extends Application {
 
 		b8.setOnAction((actionEvent) -> {
 			numberString.append("8");
-
 			output.setText(numberString.toString());
 			lastAction = "number";
 
@@ -182,7 +176,6 @@ public class CalculatorGUI extends Application {
 
 		b9.setOnAction((actionEvent) -> {
 			numberString.append("9");
-
 			output.setText(numberString.toString());
 			lastAction = "number";
 
@@ -198,7 +191,7 @@ public class CalculatorGUI extends Application {
 		});
 		
 		bR.setOnAction((actionEvent) -> {
-			// Remove the last entry
+			// Remove the last entry.
 			if(numberString.length() > 0)
 				numberString.deleteCharAt(numberString.length() - 1);
 				
@@ -233,8 +226,9 @@ public class CalculatorGUI extends Application {
 				numberString.append("-");
 				lastAction = "operation";
 			}
+			// Don't replace the previous operation, just append a minus sign (allowing for negative numbers).
 			else if(lastAction.contentEquals("operation")) {
-				numberString.replace(numberString.length() - 1, numberString.length(), "-");
+				numberString.append("-");
 				lastAction = "operation";
 			}
 			output.setText(numberString.toString());
@@ -269,10 +263,9 @@ public class CalculatorGUI extends Application {
 		bP.setOnAction((actionEvent) -> {
 		if(lastAction.contentEquals("number")) {
 			numberString.append(".");
+			lastAction = "decimal";
 		}
-		output.setText(numberString.toString());
-		lastAction = "decimal";
-		
+		output.setText(numberString.toString());		
 		});
 
 		// Keyboard Support
