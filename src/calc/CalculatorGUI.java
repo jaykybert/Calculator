@@ -202,9 +202,13 @@ public class CalculatorGUI extends Application {
 
 		bE.setOnAction((actionEvent) -> {
 			if(lastAction.contentEquals("number")) {
-				sum = evaluateNumber(numberString.toString());
-				numberString.replace(0, numberString.length(), sum.toString());
-				lastAction = "equals";
+				try {
+					sum = evaluateNumber(numberString.toString());
+					numberString.replace(0, numberString.length(), sum.toString());
+					lastAction = "equals";
+				}
+				catch(NullPointerException e) {	
+				}
 			}
 			output.setText(numberString.toString());
 		});
