@@ -12,7 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.geometry.*;
 
-public class CalculatorGUI extends Application {
+public class Calculator extends Application {
 
 	Label output = new Label("");
 	StringBuilder numberString = new StringBuilder(""); // Concatenate the entered numbers.
