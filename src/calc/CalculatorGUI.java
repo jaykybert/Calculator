@@ -49,8 +49,8 @@ public class CalculatorGUI extends Application {
 
 	public void start(Stage stage) {
 		stage.setTitle("Calculator");
-		stage.setMinHeight(400);
-		stage.setMaxHeight(400);
+		stage.setMinHeight(420);
+		stage.setMaxHeight(420);
 		stage.setMinWidth(300);
 		stage.setMaxWidth(300);
 
@@ -82,19 +82,18 @@ public class CalculatorGUI extends Application {
 		Button bD = new Button("/"); // Division
 		Button bM = new Button("*"); // Multiplication
 		Button bP = new Button("."); // Decimal Point
-
+	
+		// Grid
 		mainPad.add(b1, 1, 0);
 		mainPad.add(b2, 2, 0);
 		mainPad.add(b3, 3, 0);
 		mainPad.add(bA, 4, 0);
 		
-		mainPad.add(bC, 0, 1);
 		mainPad.add(b4, 1, 1);
 		mainPad.add(b5, 2, 1);
 		mainPad.add(b6, 3, 1);
 		mainPad.add(bS, 4, 1);
 		
-		mainPad.add(bR, 0, 2);
 		mainPad.add(b7, 1, 2);
 		mainPad.add(b8, 2, 2);
 		mainPad.add(b9, 3, 2);
@@ -104,8 +103,11 @@ public class CalculatorGUI extends Application {
 		mainPad.add(b0, 2, 3);
 		mainPad.add(bE, 3, 3);
 		mainPad.add(bM, 4, 3);
+		
+		mainPad.add(bC, 2, 4);
+		mainPad.add(bR, 3, 4);
 
-		Scene scene = new Scene(root, 300, 400);
+		Scene scene = new Scene(root, 300, 420);
 		root.getChildren().addAll(output, mainPad);
 		scene.getStylesheets().clear();
 		scene.getStylesheets().add("file:///" + cssFile.getAbsolutePath().replace("\\", "/"));
@@ -208,6 +210,7 @@ public class CalculatorGUI extends Application {
 					lastAction = "equals";
 				}
 				catch(NullPointerException e) {	
+					 // Occurs if the user presses the remove button, resulting in an empty numberString, and then presses equals.
 				}
 			}
 			output.setText(numberString.toString());
@@ -246,8 +249,7 @@ public class CalculatorGUI extends Application {
 			else if(lastAction.contentEquals("operation")) {
 				numberString.replace(numberString.length() - 1, numberString.length(), "/");
 				lastAction = "operation";
-			}
-			
+			}	
 			output.setText(numberString.toString());
 		});
 
