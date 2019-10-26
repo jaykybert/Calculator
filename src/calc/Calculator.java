@@ -17,7 +17,7 @@ public class Calculator extends Application {
 	Label output = new Label("");
 	StringBuilder numberString = new StringBuilder(""); // Concatenate the entered numbers.
 	String lastAction = "";
-	
+
 	// Parsing the equation.
 	ScriptEngineManager sem = new ScriptEngineManager();
 	ScriptEngine se = sem.getEngineByName("JavaScript");
@@ -34,8 +34,11 @@ public class Calculator extends Application {
 		launch(args);
 	}
 
-	
-	private double evaluateNumber(String s) {	
+
+	private double evaluateNumber(String s) {
+		/** Take a string, parse it as a numerical equation.
+		 * @param s: The string to be parsed.
+		 */
 		try {
 			// Cast to Double if any of the numbers or the sum contain a decimal. Otherwise return Integer.	
 			if ((s.contains(".")) || se.eval(s).toString().contains(".")) return (Double) se.eval(s);
@@ -44,10 +47,15 @@ public class Calculator extends Application {
 		catch(ScriptException e) {
 			return 0.0;
 		}
+		catch(ClassCastException e) {
+			// Occurs when dividing by zero.
+			return 0.0;
+		}
 	}
 
 
 	public void start(Stage stage) {
+		output.setAlignment(Pos.CENTER);
 		stage.setTitle("Calculator");
 		stage.setMinHeight(420);
 		stage.setMaxHeight(420);
@@ -60,8 +68,6 @@ public class Calculator extends Application {
 		mainPad.setVgap(2);
 		mainPad.setPadding(new Insets(10, 10, 10, 10));
 		mainPad.setAlignment(Pos.CENTER);
-
-		output.setAlignment(Pos.CENTER);
 
 		// Buttons
 		Button b0 = new Button("0");
@@ -82,28 +88,28 @@ public class Calculator extends Application {
 		Button bD = new Button("/"); // Division
 		Button bM = new Button("*"); // Multiplication
 		Button bP = new Button("."); // Decimal Point
-	
+
 		// Grid
 		mainPad.add(b1, 1, 0);
 		mainPad.add(b2, 2, 0);
 		mainPad.add(b3, 3, 0);
 		mainPad.add(bA, 4, 0);
-		
+
 		mainPad.add(b4, 1, 1);
 		mainPad.add(b5, 2, 1);
 		mainPad.add(b6, 3, 1);
 		mainPad.add(bS, 4, 1);
-		
+
 		mainPad.add(b7, 1, 2);
 		mainPad.add(b8, 2, 2);
 		mainPad.add(b9, 3, 2);
 		mainPad.add(bD, 4, 2);
-		
+
 		mainPad.add(bP, 1, 3);
 		mainPad.add(b0, 2, 3);
 		mainPad.add(bE, 3, 3);
 		mainPad.add(bM, 4, 3);
-		
+
 		mainPad.add(bC, 2, 4);
 		mainPad.add(bR, 3, 4);
 
@@ -119,35 +125,30 @@ public class Calculator extends Application {
 			numberString.append("0");
 			output.setText(numberString.toString());
 			lastAction = "number";
-
 		});
 
 		b1.setOnAction((actionEvent) -> {
 			numberString.append("1");
 			output.setText(numberString.toString());
 			lastAction = "number";
-
 		});
 
 		b2.setOnAction((actionEvent) -> {
 			numberString.append("2");
 			output.setText(numberString.toString());
 			lastAction = "number";
-
 		});
 
 		b3.setOnAction((actionEvent) -> {
 			numberString.append("3");
 			output.setText(numberString.toString());
 			lastAction = "number";
-
 		});
 
 		b4.setOnAction((actionEvent) -> {
 			numberString.append("4");
 			output.setText(numberString.toString());
 			lastAction = "number";
-
 		});
 
 		b5.setOnAction((actionEvent) -> {
@@ -166,21 +167,18 @@ public class Calculator extends Application {
 			numberString.append("7");
 			output.setText(numberString.toString());
 			lastAction = "number";
-
 		});
 
 		b8.setOnAction((actionEvent) -> {
 			numberString.append("8");
 			output.setText(numberString.toString());
 			lastAction = "number";
-
 		});
 
 		b9.setOnAction((actionEvent) -> {
 			numberString.append("9");
 			output.setText(numberString.toString());
 			lastAction = "number";
-
 		});
 
 		bC.setOnAction((actionEvent) -> {
@@ -189,18 +187,17 @@ public class Calculator extends Application {
 			sum = 0.0;
 			output.setText(numberString.toString());
 			lastAction = "";
-
 		});
-		
+
 		bR.setOnAction((actionEvent) -> {
 			// Remove the last entry.
 			if(numberString.length() > 0)
 				numberString.deleteCharAt(numberString.length() - 1);
-				
+
 			output.setText(numberString.toString());
 			lastAction = "number";
 		});
-		
+
 
 		bE.setOnAction((actionEvent) -> {
 			if(lastAction.contentEquals("number")) {
@@ -210,7 +207,7 @@ public class Calculator extends Application {
 					lastAction = "equals";
 				}
 				catch(NullPointerException e) {	
-					 // Occurs if the user presses the remove button, resulting in an empty numberString, and then presses equals.
+					// Occurs if the user presses the remove button, resulting in an empty numberString, and then presses equals.
 				}
 			}
 			output.setText(numberString.toString());
@@ -262,16 +259,15 @@ public class Calculator extends Application {
 				numberString.replace(numberString.length() - 1, numberString.length(), "*");
 				lastAction = "operation";
 			}
-			
 			output.setText(numberString.toString());
 		});
-		
+
 		bP.setOnAction((actionEvent) -> {
-		if(lastAction.contentEquals("number")) {
-			numberString.append(".");
-			lastAction = "decimal";
-		}
-		output.setText(numberString.toString());		
+			if(lastAction.contentEquals("number")) {
+				numberString.append(".");
+				lastAction = "decimal";
+			}
+			output.setText(numberString.toString());		
 		});
 
 		// Keyboard Support
