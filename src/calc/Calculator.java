@@ -94,22 +94,18 @@ public class Calculator extends Application {
 		mainPad.add(b2, 2, 0);
 		mainPad.add(b3, 3, 0);
 		mainPad.add(bA, 4, 0);
-
 		mainPad.add(b4, 1, 1);
 		mainPad.add(b5, 2, 1);
 		mainPad.add(b6, 3, 1);
 		mainPad.add(bS, 4, 1);
-
 		mainPad.add(b7, 1, 2);
 		mainPad.add(b8, 2, 2);
 		mainPad.add(b9, 3, 2);
 		mainPad.add(bD, 4, 2);
-
 		mainPad.add(bP, 1, 3);
 		mainPad.add(b0, 2, 3);
 		mainPad.add(bE, 3, 3);
 		mainPad.add(bM, 4, 3);
-
 		mainPad.add(bC, 2, 4);
 		mainPad.add(bR, 3, 4);
 
@@ -193,7 +189,6 @@ public class Calculator extends Application {
 			// Remove the last entry.
 			if(numberString.length() > 0)
 				numberString.deleteCharAt(numberString.length() - 1);
-
 			output.setText(numberString.toString());
 			lastAction = "number";
 		});
