@@ -3,8 +3,7 @@
 	-fx-pref-height: 60px;
 	-fx-font-size: 20px;
 	-fx-font-family: monospace;
-	-fx-background-color: #778899;
-	-fx-text-fill: #FFFFFF
+	-fx-text-fill: #000000;
 }
 
 .button:hover {
@@ -14,17 +13,12 @@
 	-fx-font-weight: bold;
 }
 
-.button:pressed {
-	-fx-border-style: solid;
-}
-
 .label {
 	-fx-pref-width: 284px;
 	-fx-pref-height: 50px;
-	-fx-background-color: #778899;
 	-fx-font-size: 20px;
 	-fx-font-family: monospace;
-	-fx-text-fill: #FFFFFF;
+	-fx-text-fill: #000000;
 	-fx-border-color: #000000;
 	-fx-border-width: 3px;
 	-fx-border-style: solid;
