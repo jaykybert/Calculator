@@ -28,7 +28,7 @@ public class Calculator extends Application {
 	KeyCombination keyPlus = new KeyCodeCombination(KeyCode.EQUALS, KeyCodeCombination.SHIFT_DOWN);
 	KeyCombination keyMult = new KeyCodeCombination(KeyCode.DIGIT8, KeyCodeCombination.SHIFT_DOWN);
 
-	File cssFile = new File("src/calc/style.css");
+	File cssFile = new File("src\\calc\\style.css");
 
 	public static void main(String[] args) {
 		launch(args);
